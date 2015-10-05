@@ -28,6 +28,10 @@ class LoginView {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response() {
+        if(isset($_SESSION[RegisterModel::$newUsername]))
+            $this->returnMessages ="Registered new user.";
+
+
 		$message = $this->returnMessages;
 
         if($this->checkIfLoggedIn()){
@@ -60,8 +64,7 @@ class LoginView {
 	* @param $message, String output message
 	* @return  void, BUT writes to standard output!
 	*/
-        private function generateLoginFormHTML($message)
-    {
+    private function generateLoginFormHTML($message) {
         return '
 			<form method="post" >
 				<fieldset>
@@ -84,13 +87,16 @@ class LoginView {
     }
 
 	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
-	public function getRequestUserName() {
+	public function getRequestUserName(){
         if(isset($_POST[self::$name])){
             return trim($_POST[self::$name]);
         }
+        elseif(isset($_SESSION[RegisterModel::$newUsername])){
+            return $_SESSION[RegisterModel::$newUsername];
+        }
 	}
 
-    public function getRequestPassword() {
+    public function getRequestPassword(){
         if(isset($_POST[self::$password])){
             return trim($_POST[self::$password]);
         }

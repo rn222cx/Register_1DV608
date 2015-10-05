@@ -32,6 +32,10 @@ class Db {
         $this->stmt->bindValue($param, $value);
     }
 
+    public function bindParam($param, $value){
+        $this->stmt->bindParam($param, $value);
+    }
+
     public function execute(){
         return $this->stmt->execute();
     }
@@ -46,5 +50,7 @@ class Db {
         return $this->stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-
+    public function rowCount(){
+        return $this->stmt->rowCount();
+    }
 }

@@ -1,10 +1,12 @@
 <?php
 
-//require_once('model/LoginModel.php');
 
 class LayoutView {
   
-  public function render($isLoggedIn, LoginView $v, DateTimeView $dtv) {
+  public function render($isLoggedIn, $view) {
+
+      $dtv = new DateTimeView();
+
     echo '<!DOCTYPE html>
       <html>
         <head>
@@ -12,11 +14,15 @@ class LayoutView {
           <title>Login Example</title>
         </head>
         <body>
+
           <h1>Assignment 2</h1>
+
+          ' . $this->renderURL($view) . '
+
           ' . $this->renderIsLoggedIn($isLoggedIn) . '
           
           <div class="container">
-              ' . $v->response() . '
+              ' . $view->response() . '
 
               ' . $dtv->show() . '
           </div>
@@ -33,4 +39,18 @@ class LayoutView {
       return '<h2>Not logged in</h2>';
     }
   }
+
+  public function renderURL($view){
+      $register = "register";
+      if(get_class($view) == 'LoginView'){
+          return "<a href='?" . $register . "'>Register a new user</a>";
+      }
+      elseif(get_class($view) == 'RegisterView'){
+          return "<a href='?'>Back to login</a>";
+      }
+
+
+  }
+
+
 }

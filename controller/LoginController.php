@@ -1,18 +1,22 @@
 <?php
 
 require_once('model/LoginModel.php');
+require_once('view/LoginView.php');
 
 
 class LoginController {
     private $loginModel;
     private $loginView;
+    private $layoutView;
 
     public function __construct(){
         $this->loginModel = new LoginModel();
+        $this->layoutView = new LayoutView();
         $this->loginView = new LoginView($this->loginModel);
     }
 
     public function doControl(){
+
         if($this->loginView->userWantsToLogin() && !$this->checkIfLoggedIn()){
             $username = $this->loginView->getRequestUserName();
             $password = $this->loginView->getRequestPassword();
@@ -33,10 +37,7 @@ class LoginController {
             //$this->updateCookies(); // Set new cookies
         }
 
-        $dtv = new DateTimeView();
-        $lv = new LayoutView();
-
-        $lv->render($this->checkIfLoggedIn(), $this->loginView, $dtv);
+        $this->layoutView->render($this->checkIfLoggedIn(), $this->loginView);
     }
 
     /**
