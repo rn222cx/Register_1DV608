@@ -31,7 +31,6 @@ class LoginView {
         if(isset($_SESSION[RegisterModel::$newUsername]))
             $this->returnMessages ="Registered new user.";
 
-
 		$message = $this->returnMessages;
 
         if($this->checkIfLoggedIn()){
@@ -86,13 +85,18 @@ class LoginView {
 		';
     }
 
-	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
-	public function getRequestUserName(){
+    /**
+     * returns posted username or last registered username if new register is done
+     * @return string
+     */
+    public function getRequestUserName(){
         if(isset($_POST[self::$name])){
             return trim($_POST[self::$name]);
         }
         elseif(isset($_SESSION[RegisterModel::$newUsername])){
-            return $_SESSION[RegisterModel::$newUsername];
+            $username = $_SESSION[RegisterModel::$newUsername];
+            unset($_SESSION[RegisterModel::$newUsername]);
+            return $username;
         }
 	}
 

@@ -1,4 +1,5 @@
 <?php
+require_once('exceptions/userAlreadyExistException.php');
 
 require_once('view/RegisterView.php');
 require_once('model/RegisterModel.php');
@@ -11,23 +12,25 @@ class RegisterController
     private $registerModel;
     private $layoutView;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->layoutView = new LayoutView();
         $this->registerModel = new RegisterModel();
         $this->registerView = new RegisterView($this->registerModel);
     }
 
-    public function doControl(){
+    public function doControl()
+    {
 
-        if($this->registerView->userWantsToRegister()){
+        if ($this->registerView->userWantsToRegister()) {
 
-            if($this->registerView->validateFormInputs() == null){
+            if ($this->registerView->validateFormInputs() == null) {
                 $credentials = $this->registerView->getCredentials();
                 try {
                     if ($this->registerModel->doRegister($credentials) == true)
                         $this->registerView->redirectToLoginPage();
 
-                } catch (userAlreadyExistException $e){
+                } catch (userAlreadyExistException $e) {
                     $this->registerView->getExceptions($e->getMessage());
                 }
 

@@ -1,15 +1,14 @@
 <?php
 
 
-
-
 class MasterController
 {
 
-    public function doControl(){
+    public function doControl()
+    {
         $getURL = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 
-        if (strpos($getURL,'register')) {
+        if (strpos($getURL, 'register')) {
             $rc = new RegisterController();
             $rc->doControl();
         } else {

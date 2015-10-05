@@ -4,7 +4,8 @@ session_start();
 
 require_once('dal/Db.php');
 
-class LoginModel {
+class LoginModel
+{
 
     private static $setSessionUser = 'LoginModel::user';
     public static $sessionLoginMessage = 'LoginModel::message';
@@ -18,17 +19,17 @@ class LoginModel {
      * @param $password
      * @return bool
      */
-    public function authenticate($username, $password){
+    public function authenticate($username, $password)
+    {
         $this->Db = new Db();
         $records = $this->Db;
         $records->query('SELECT username,password FROM users WHERE BINARY username = :username');
         $records->bind(':username', $username);
         $results = $records->single();
 
-        if(count($results) > 0 && password_verify($password, $results['password'])){
+        if (count($results) > 0 && password_verify($password, $results['password'])) {
             return $_SESSION[self::$setSessionUser] = $results['username'];
-        }
-        else{
+        } else {
             return false;
         }
 
@@ -37,11 +38,13 @@ class LoginModel {
     /**
      * @return bool
      */
-    public function isSessionSet(){
+    public function isSessionSet()
+    {
         return isset($_SESSION[self::$setSessionUser]);
     }
 
-    public function destroySession($message){
+    public function destroySession($message)
+    {
         unset($_SESSION[self::$setSessionUser]);
         $_SESSION[self::$sessionLoginMessage] = $message;
     }
@@ -50,7 +53,8 @@ class LoginModel {
      * Return message in session and removes it afterwards
      * @return mixed
      */
-    public function unsetSessionMessage() {
+    public function unsetSessionMessage()
+    {
         if (isset($_SESSION[self::$sessionLoginMessage])) {
             $message = $_SESSION[self::$sessionLoginMessage];
             $_SESSION[self::$sessionLoginMessage] = null;
@@ -59,22 +63,26 @@ class LoginModel {
 
     }
 
-    public function setSessionMessage($message){
+    public function setSessionMessage($message)
+    {
         $_SESSION[self::$sessionLoginMessage] = $message;
     }
 
     /**
      * if users session expires new one will be set from cookie
      */
-    public function setSessionFromCookie(){
+    public function setSessionFromCookie()
+    {
         $_SESSION[self::$setSessionUser] = $_COOKIE['LoginView::CookieName'];
     }
 
-    public function setCookiePassword(){
+    public function setCookiePassword()
+    {
         return password_hash("random", PASSWORD_BCRYPT);
     }
 
-    public function setCookieTime(){
+    public function setCookieTime()
+    {
         return strtotime('tomorrow');
     }
 
@@ -82,7 +90,8 @@ class LoginModel {
      * @param $password
      * @param $time
      */
-    public function updateValuesInDatabase($password, $time, $browser){
+    public function updateValuesInDatabase($password, $time, $browser)
+    {
         $database = new Db();
         $username = $_SESSION[self::$setSessionUser];
         $database->query('UPDATE users SET cookie_password = :cookie_password, coockie_date = :cookie_date, browser = :browser WHERE username = :username');
@@ -94,7 +103,8 @@ class LoginModel {
         $database->execute();
     }
 
-    public function updateSingleValueInDatabase($browser){
+    public function updateSingleValueInDatabase($browser)
+    {
         $database = $this->Db;
         $username = $_SESSION[self::$setSessionUser];
         $database->query('UPDATE users SET browser = :browser WHERE username = :username');
@@ -107,7 +117,8 @@ class LoginModel {
     /**
      * @return array
      */
-    public function selectRowInDatabase(){
+    public function selectRowInDatabase()
+    {
         $database = new Db();
         // use username from session if session isset or else use username from cookie
         $username = $this->isSessionSet() ? $_SESSION[self::$setSessionUser] : $_COOKIE['LoginView::CookieName'];

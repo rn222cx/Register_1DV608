@@ -20,7 +20,6 @@ class RegisterView
 
     public function response()
     {
-
         return $this->generateRegisterFormHTML($this->message);
     }
 
@@ -103,7 +102,9 @@ class RegisterView
 
     public function redirectToLoginPage()
     {
-        header("Location: ?");
+       // header("Location: ?");
+        $loginPage = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+        header("Location: $loginPage");
     }
 
 }
