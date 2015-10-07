@@ -1,3 +1,3 @@
 <?php
 
-class userAlreadyExistException extends Exception {};
+class UserAlreadyExistException extends Exception {};

@@ -46,47 +46,68 @@ class RegisterView
 		';
     }
 
-    public function getUsername()
+    private function getUsername()
     {
         if (isset($_POST[self::$name]))
             return trim($_POST[self::$name]);
     }
 
-    public function getPassword()
+    private function getPassword()
     {
         if (isset($_POST[self::$password]))
             return trim($_POST[self::$password]);
     }
 
-    public function getRepeatPassword()
+    private function getRepeatPassword()
     {
         if (isset($_POST[self::$repeatPassword]))
             return trim($_POST[self::$repeatPassword]);
     }
 
-    public function validateFormInputs()
-    {
-        if (strlen($this->getUsername()) < 3)
-            $this->message .= "Username has too few characters, at least 3 characters.<br>";
-
-        if (strlen($this->getPassword()) < 6)
-            $this->message .= "Password has too few characters, at least 6 characters.<br>";
-
-        if ($this->getPassword() != $this->getRepeatPassword())
-            $this->message .= "Passwords do not match.<br>";
-
-        if (filter_var($this->getUsername(), FILTER_SANITIZE_STRING) !== $this->getUsername()) {
-            $this->message .= "Username contains invalid characters.<br>";
-            $_POST[self::$name] = strip_tags($_POST[self::$name]);
-        }
-        return $this->message;
-    }
+    /**
+     * This would be the easiest way to validate.
+     * @return string
+     */
+//    public function validateFormInputs()
+//    {
+//        if (strlen($this->getUsername()) < 3)
+//            $this->message .= "Username has too few characters, at least 3 characters.<br>";
+//
+//        if (strlen($this->getPassword()) < 6)
+//            $this->message .= "Password has too few characters, at least 6 characters.<br>";
+//
+//        if ($this->getPassword() != $this->getRepeatPassword())
+//            $this->message .= "Passwords do not match.<br>";
+//
+//        if (filter_var($this->getUsername(), FILTER_SANITIZE_STRING) !== $this->getUsername()) {
+//            $this->message .= "Username contains invalid characters.<br>";
+//            $_POST[self::$name] = strip_tags($_POST[self::$name]);
+//        }
+//        return $this->message;
+//    }
 
     public function getCredentials()
     {
-        return new \model\RegisterUser(
-            $this->getUsername(),
-            $this->getPassword());
+        try {
+            return new \model\RegisterUser(
+                $this->getUsername(),
+                $this->getRepeatPassword(),
+                $this->getPassword());
+        } catch (\NameAndPasswordLengthException $e) {
+            $this->message = "Username has too few characters, at least 3 characters.<br>
+                                Password has too few characters, at least 6 characters.";
+        }catch (\UsernameLengthException $e) {
+            $this->message = "Username has too few characters, at least 3 characters.";
+        } catch (\PasswordLengthException $e) {
+            $this->message = "Password has too few characters, at least 6 characters.";
+        } catch (\PasswordDoesntMatchException $e) {
+            $this->message = "Passwords do not match.";
+        } catch (\UsernameInvalidCharactersException $e) {
+            $this->message = "Username contains invalid characters.";
+        }
+
+        $_POST[self::$name] = strip_tags($_POST[self::$name]);
+
     }
 
     public function userWantsToRegister()
@@ -96,14 +117,14 @@ class RegisterView
 
     public function getExceptions($exception)
     {
-        if (strpos($exception, 'userAlreadyExistException'))
+        if (strpos($exception, 'UserAlreadyExistException'))
             $this->message = "User exists, pick another username.";
     }
 
     public function redirectToLoginPage()
     {
-       // header("Location: ?");
-        $loginPage = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+        // header("Location: ?");
+        $loginPage = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
         header("Location: $loginPage");
     }
 

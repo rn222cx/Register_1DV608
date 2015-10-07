@@ -32,7 +32,7 @@ class LayoutView
     ';
     }
 
-    public function renderIsLoggedIn($isLoggedIn)
+    private function renderIsLoggedIn($isLoggedIn)
     {
         if ($isLoggedIn) {
             return '<h2>Logged in</h2>';
@@ -41,7 +41,7 @@ class LayoutView
         }
     }
 
-    public function renderURL($view)
+    private function renderURL($view)
     {
         $register = "register";
         if (get_class($view) == 'LoginView') {

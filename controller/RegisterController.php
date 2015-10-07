@@ -1,5 +1,11 @@
 <?php
-require_once('exceptions/userAlreadyExistException.php');
+require_once('exceptions/UserAlreadyExistException.php');
+require_once('exceptions/UsernameLengthException.php');
+require_once('exceptions/PasswordDosentMatchException.php');
+require_once('exceptions/PasswordLengthException.php');
+require_once('exceptions/UsernameInvalidCharactersException.php');
+require_once('exceptions/NameAndPasswordLengthException.php');
+
 
 require_once('view/RegisterView.php');
 require_once('model/RegisterModel.php');
@@ -24,19 +30,18 @@ class RegisterController
 
         if ($this->registerView->userWantsToRegister()) {
 
-            if ($this->registerView->validateFormInputs() == null) {
-                $credentials = $this->registerView->getCredentials();
+            $credentials = $this->registerView->getCredentials();
+            if ($credentials) {
                 try {
                     if ($this->registerModel->doRegister($credentials) == true)
                         $this->registerView->redirectToLoginPage();
 
-                } catch (userAlreadyExistException $e) {
+                } catch (UserAlreadyExistException $e) {
                     $this->registerView->getExceptions($e->getMessage());
                 }
-
             }
-
         }
+
 
         $this->layoutView->render(false, $this->registerView);
     }

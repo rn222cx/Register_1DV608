@@ -29,12 +29,12 @@ class LoginController {
         }
 
         if($this->loginView->doCookieExist()){
-            $this->updateCookies(); // Set new cookies and also store them in the database
+            //$this->updateCookies(); // Set new cookies and also store them in the database
             $getCookieFromDatabase = $this->loginModel->selectRowInDatabase();
             if($message = $this->loginView->checkingManipulatedCookies($getCookieFromDatabase)){
                 $this->logout($message);
             }
-            //$this->updateCookies(); // Set new cookies
+            $this->updateCookies(); // Set new cookies
         }
 
         $this->layoutView->render($this->checkIfLoggedIn(), $this->loginView);

@@ -16,7 +16,7 @@ class RegisterModel
         $records->resultset();
 
         if($records->rowCount() > 0){
-            throw new userAlreadyExistException("RegisterModel::userAlreadyExistException");
+            throw new UserAlreadyExistException("RegisterModel::UserAlreadyExistException");
         }
         else{
             $password = password_hash($credential->getPassword(), PASSWORD_BCRYPT);
