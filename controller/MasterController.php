@@ -4,6 +4,9 @@
 class MasterController
 {
 
+    /**
+     * Choose controller depending on the URL
+     */
     public function doControl()
     {
         $getURL = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];

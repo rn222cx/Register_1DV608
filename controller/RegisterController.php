@@ -27,7 +27,6 @@ class RegisterController
 
     public function doControl()
     {
-
         if ($this->registerView->userWantsToRegister()) {
 
             $credentials = $this->registerView->getCredentials();

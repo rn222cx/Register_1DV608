@@ -3,6 +3,8 @@
 
 class LayoutView
 {
+    private $registerURL = "register";
+
 
     public function render($isLoggedIn, $view)
     {
@@ -41,11 +43,14 @@ class LayoutView
         }
     }
 
+    /**
+     * @param $view
+     * @return string from class name
+     */
     private function renderURL($view)
     {
-        $register = "register";
         if (get_class($view) == 'LoginView') {
-            return "<a href='?" . $register . "'>Register a new user</a>";
+            return "<a href='?" . $this->registerURL . "'>Register a new user</a>";
         } elseif (get_class($view) == 'RegisterView') {
             return "<a href='?'>Back to login</a>";
         }

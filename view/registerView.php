@@ -65,7 +65,7 @@ class RegisterView implements model\IregisterListener
     }
 
     /**
-     * This would be the easiest way to validate if it where allowed.
+     * View validation.
      * @return string
      */
 //    public function validateFormInputs()
@@ -86,22 +86,29 @@ class RegisterView implements model\IregisterListener
 //        return $this->message;
 //    }
 
+
+    /**
+     * return new user if it gets pass validation
+     * @return \model\RegisterUser
+     */
     public function getCredentials()
     {
-        if ($this->getPassword() != $this->getRepeatPassword())
-            $this->message .= "Passwords do not match.<br>";
-
         try {
+            if ($this->getPassword() != $this->getRepeatPassword())
+                throw new \PasswordDoesntMatchException();
+
             return new \model\RegisterUser(
                 $this->getUsername(),
                 $this->getPassword());
         } catch (\NameAndPasswordLengthException $e) {
             $this->message = "Username has too few characters, at least 3 characters.<br>
                                 Password has too few characters, at least 6 characters.";
-        }catch (\UsernameLengthException $e) {
+        } catch (\UsernameLengthException $e) {
             $this->message = "Username has too few characters, at least 3 characters.";
         } catch (\PasswordLengthException $e) {
             $this->message = "Password has too few characters, at least 6 characters.";
+        } catch (\PasswordDoesntMatchException $e) {
+            $this->message = "Passwords do not match.";
         } catch (\UsernameInvalidCharactersException $e) {
             $this->message = "Username contains invalid characters.";
         }
@@ -122,6 +129,10 @@ class RegisterView implements model\IregisterListener
         header("Location: $loginPage");
     }
 
+    /**
+     * Listen from IregisterListener in RegisterModel
+     * @param $listener
+     */
     public function userExist($listener)
     {
         $this->message = "User exists, pick another username.";
