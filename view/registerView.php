@@ -1,7 +1,7 @@
 <?php
 
 
-class RegisterView
+class RegisterView implements model\IregisterListener
 {
     private static $register = 'RegisterView::Register';
     private static $name = 'RegisterView::UserName';
@@ -65,7 +65,7 @@ class RegisterView
     }
 
     /**
-     * This would be the easiest way to validate.
+     * This would be the easiest way to validate if it where allowed.
      * @return string
      */
 //    public function validateFormInputs()
@@ -88,10 +88,12 @@ class RegisterView
 
     public function getCredentials()
     {
+        if ($this->getPassword() != $this->getRepeatPassword())
+            $this->message .= "Passwords do not match.<br>";
+
         try {
             return new \model\RegisterUser(
                 $this->getUsername(),
-                $this->getRepeatPassword(),
                 $this->getPassword());
         } catch (\NameAndPasswordLengthException $e) {
             $this->message = "Username has too few characters, at least 3 characters.<br>
@@ -100,8 +102,6 @@ class RegisterView
             $this->message = "Username has too few characters, at least 3 characters.";
         } catch (\PasswordLengthException $e) {
             $this->message = "Password has too few characters, at least 6 characters.";
-        } catch (\PasswordDoesntMatchException $e) {
-            $this->message = "Passwords do not match.";
         } catch (\UsernameInvalidCharactersException $e) {
             $this->message = "Username contains invalid characters.";
         }
@@ -115,12 +115,6 @@ class RegisterView
         return isset($_POST[self::$register]);
     }
 
-    public function getExceptions($exception)
-    {
-        if (strpos($exception, 'UserAlreadyExistException'))
-            $this->message = "User exists, pick another username.";
-    }
-
     public function redirectToLoginPage()
     {
         // header("Location: ?");
@@ -128,4 +122,8 @@ class RegisterView
         header("Location: $loginPage");
     }
 
+    public function userExist($listener)
+    {
+        $this->message = "User exists, pick another username.";
+    }
 }

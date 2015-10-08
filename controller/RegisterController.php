@@ -6,7 +6,7 @@ require_once('exceptions/PasswordLengthException.php');
 require_once('exceptions/UsernameInvalidCharactersException.php');
 require_once('exceptions/NameAndPasswordLengthException.php');
 
-
+require_once('model/IregisterListener.php');
 require_once('view/RegisterView.php');
 require_once('model/RegisterModel.php');
 require_once('model/RegisterUser.php');
@@ -32,16 +32,10 @@ class RegisterController
 
             $credentials = $this->registerView->getCredentials();
             if ($credentials) {
-                try {
-                    if ($this->registerModel->doRegister($credentials) == true)
-                        $this->registerView->redirectToLoginPage();
-
-                } catch (UserAlreadyExistException $e) {
-                    $this->registerView->getExceptions($e->getMessage());
-                }
+                if ($this->registerModel->doRegister($credentials, $this->registerView) == true)
+                    $this->registerView->redirectToLoginPage();
             }
         }
-
 
         $this->layoutView->render(false, $this->registerView);
     }

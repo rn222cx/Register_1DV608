@@ -6,7 +6,7 @@ class RegisterModel
 
     public static $newUsername = 'RegisterModel::newUsername';
 
-    public function doRegister(\model\RegisterUser $credential)
+    public function doRegister(\model\RegisterUser $credential, model\IregisterListener $listener)
     {
         $username = $credential->getUsername();
 
@@ -16,7 +16,7 @@ class RegisterModel
         $records->resultset();
 
         if($records->rowCount() > 0){
-            throw new UserAlreadyExistException("RegisterModel::UserAlreadyExistException");
+            $listener->userExist("RegisterModel::UserAlreadyExistException");
         }
         else{
             $password = password_hash($credential->getPassword(), PASSWORD_BCRYPT);
